@@ -1,52 +1,40 @@
-import JobCard from "../components/JobCard";
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 
-const jobs = [
-  {
-    id: 1,
-    title: "Framing Carpenter",
-    company: "Precision Builders",
-    location: "Detroit, MI",
-    rate: "$25/hr",
-    trade: "Carpentry"
-  },
-  {
-    id: 2,
-    title: "Journeyman Electrician",
-    company: "Volt Solutions",
-    location: "Cleveland, OH",
-    rate: "$32/hr",
-    trade: "Electrical"
-  },
-  {
-    id: 3,
-    title: "Roofing Laborer",
-    company: "TopShield Roofing",
-    location: "Toledo, OH",
-    rate: "$18/hr",
-    trade: "Roofing"
-  },
-  {
-    id: 4,
-    title: "Plumber's Apprentice",
-    company: "Fast Flow Plumbing",
-    location: "Grand Rapids, MI",
-    rate: "$20/hr",
-    trade: "Plumbing"
-  }
-];
-
 export default function JobsPage() {
+  const [jobs, setJobs] = useState([]);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    fetch("/api/jobs")
+      .then(res => res.json())
+      .then(setJobs);
+  }, []);
+
+  const filtered = jobs.filter(job =>
+    job.title.toLowerCase().includes(query.toLowerCase()) ||
+    job.location.toLowerCase().includes(query.toLowerCase())
+  );
+
   return (
     <>
       <Header />
-      <main>
-        <h1>Available Jobs</h1>
-        <div style={{ display: "grid", gap: "1rem", padding: "1rem" }}>
-          {jobs.map((job) => (
-            <JobCard key={job.id} job={job} />
+      <main style={{ padding: "1rem" }}>
+        <h1>Browse Jobs</h1>
+        <input
+          placeholder="Search by title or location"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{ padding: "0.5rem", marginBottom: "1rem", width: "100%", maxWidth: "400px" }}
+        />
+        <ul>
+          {filtered.map(job => (
+            <li key={job.id}>
+              <strong>{job.title}</strong> — {job.location}
+            </li>
           ))}
-        </div>
+          {filtered.length === 0 && <li>No results found.</li>}
+        </ul>
       </main>
     </>
   );
