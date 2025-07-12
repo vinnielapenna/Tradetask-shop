@@ -11,8 +11,11 @@ export default function Header() {
       <Link href="/worker" style={{ marginRight: 15 }}>Worker</Link>
       <Link href="/leave-review" style={{ marginRight: 15 }}>Leave Review</Link>
       <Link href="/vouch" style={{ marginRight: 15 }}>Vouch</Link>
+      <Link href="/points" style={{ marginRight: 15 }}>Points</Link>
+      <Link href="/messages" style={{ marginRight: 15 }}>Messages</Link>
       <Link href="/login">Login</Link>
     </nav>
   );
 }
+
 
