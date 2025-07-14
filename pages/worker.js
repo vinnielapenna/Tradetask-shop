@@ -1,39 +1,35 @@
 import Header from "../components/Header";
-import { useState } from "react";
-import { vouches, reviews } from "../lib/data";
+import { useSession } from "next-auth/react";
+import { hires } from "../lib/data";
 
-const mockWorkers = [
-  { email: "worker1@example.com", name: "John D." },
-  { email: "worker2@example.com", name: "Sarah T." },
-  { email: "worker3@example.com", name: "Mike R." }
-];
+export default function WorkerDashboard() {
+  const { data: session } = useSession();
+  const email = session?.user?.email || "worker1@example.com"; // default fallback
 
-export default function WorkersPage() {
-  const [query, setQuery] = useState("");
-
-  const filtered = mockWorkers.filter((w) =>
-    w.name.toLowerCase().includes(query.toLowerCase()) ||
-    w.email.toLowerCase().includes(query.toLowerCase())
-  );
+  const incoming = hires.filter((h) => h.to === email);
 
   return (
     <>
       <Header />
       <main style={{ padding: "1rem" }}>
-        <h1>Find Workers</h1>
-        <input
-          placeholder="Search by name or email"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={{ padding: "0.5rem", marginBottom: "1rem", width: "100%", maxWidth: 400 }}
-        />
-        <ul>
-          {filtered.map((w) => (
-            <li key={w.email}>
-              <a href={`/profile/${w.email}`}>{w.name}</a>
-            </li>
-          ))}
-        </ul>
+        <h1>Worker Dashboard</h1>
+
+        <section>
+          <h2>Incoming Hire Requests</h2>
+          {incoming.length > 0 ? (
+            <ul>
+              {incoming.map((h, i) => (
+                <li key={i}>
+                  <strong>{h.title}</strong> from {h.from} <br />
+                  <em>{h.location}</em><br />
+                  {h.description}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No incoming hire requests.</p>
+          )}
+        </section>
       </main>
     </>
   );
