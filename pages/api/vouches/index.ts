@@ -34,3 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   return res.status(405).end();
 }
+
+// ✅ ADD THIS LINE TO EXPORT THE MOCK DB
+export { vouchDB };
+
