@@ -14,14 +14,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { workerId, relationship, message } = req.body;
 
     const existing = vouchDB.find(
-      (v) => v.workerId === workerId && v.authorId === session.user.id
+      (v) =>
+        v.workerId === workerId &&
+        v.authorId === (session.user as any).id // ✅ Trust us — it has an id
     );
     if (existing) return res.status(400).json({ error: 'Already vouched for this worker' });
 
     const newVouch: Vouch = {
       id: uuidv4(),
       workerId,
-      authorId: session.user.id,
+      authorId: (session.user as any).id,
       authorName: session.user.name || 'Anonymous',
       relationship,
       message,
@@ -35,6 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   return res.status(405).end();
 }
 
-// ✅ ADD THIS LINE TO EXPORT THE MOCK DB
 export { vouchDB };
+
 
