@@ -11,7 +11,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   res.status(200).json(vouches);
 }
 
-      {error && <p className="text-red-600">{error}</p>}
-    </form>
+      
   );
 }
