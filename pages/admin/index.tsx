@@ -1,16 +1,57 @@
-import { useSession } from 'next-auth/react';
-import AdminVouchTable from '../../components/AdminVouchTable';
+// pages/admin/index.tsx
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function AdminDashboard() {
-  const { data: session } = useSession();
-  const isAdmin = (session?.user as any)?.email === 'admin@tradetaskjobs.com'; // temporary check
+  const [flaggedVouches, setFlaggedVouches] = useState([]);
+  const [stats, setStats] = useState({ jobs: 0, vouches: 0, users: 0 });
 
-  if (!isAdmin) return <p>Unauthorized</p>;
+  useEffect(() => {
+    async function fetchData() {
+      const flaggedRes = await fetch("/api/admin/flagged");
+      const flagged = await flaggedRes.json();
+      setFlaggedVouches(flagged);
+
+      const statsRes = await fetch("/api/admin/stats");
+      const statsData = await statsRes.json();
+      setStats(statsData);
+    }
+
+    fetchData();
+  }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      <AdminVouchTable />
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold">App Stats</h2>
+        <ul className="mt-2">
+          <li>Total Jobs Posted: {stats.jobs}</li>
+          <li>Total Vouches: {stats.vouches}</li>
+          <li>Total Users: {stats.users}</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="text-xl font-semibold mb-2">Flagged Vouches</h2>
+        {flaggedVouches.length === 0 ? (
+          <p className="text-gray-500">No flagged vouches.</p>
+        ) : (
+          <ul className="space-y-3">
+            {flaggedVouches.map((vouch: any) => (
+              <li key={vouch.id} className="p-3 border rounded">
+                <p><strong>Worker ID:</strong> {vouch.workerId}</p>
+                <p><strong>Flag Reason:</strong> {vouch.flagReason || "N/A"}</p>
+                <Link href={`/admin/${vouch.id}`}>
+                  <span className="text-blue-600 underline">Review</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
+
