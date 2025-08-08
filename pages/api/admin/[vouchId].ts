@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { vouchDB } from '../../vouches';
+import { vouchDB } from '../../api/vouches';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const {
