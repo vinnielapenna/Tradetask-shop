@@ -20,15 +20,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
     if (existing) return res.status(400).json({ error: 'Already vouched for this worker' });
 
-    const newVouch: Vouch = {
-      id: uuidv4(),
-      workerId,
-      authorId: (session.user as any).id,
-      authorName: session.user.name || 'Anonymous',
-      relationship,
-      message,
-      createdAt: new Date().toISOString(),
-    };
+   const newVouch: Vouch = {
+  id: uuidv4(),
+  workerId,
+  authorId: (session.user as any).id,
+  authorName: session.user.name || 'Anonymous',
+  relationship,
+  message,
+  content: `${relationship}: ${message}`,
+  createdAt: new Date().toISOString(),
+};
 
     vouchDB.push(newVouch);
     return res.status(201).json(newVouch);
