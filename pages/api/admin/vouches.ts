@@ -1,10 +1,13 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { vouchDB } from '../vouches';
+// lib/data/vouches.ts
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
-    return res.status(200).json(vouchDB);
-  }
-
-  return res.status(405).end();
+export interface Vouch {
+  id: string
+  workerId: string
+  authorId: string
+  text: string
+  flagged?: boolean
+  moderationNote?: string
 }
+
+export const vouchDB: Vouch[] = []
+
