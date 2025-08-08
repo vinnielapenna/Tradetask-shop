@@ -2,8 +2,8 @@ export interface Vouch {
   id: string;
   workerId: string;
   authorId: string;
-  authorName: string;
-  relationship: string;
-  message: string;
-  createdAt: string;
+  content: string; // ✅ This was missing
+  flagged?: boolean;
+  adminNote?: string;
 }
+
